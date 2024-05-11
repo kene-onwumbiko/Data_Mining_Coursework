@@ -23,7 +23,7 @@ bank_data_duplicated = bank_data.duplicated().sum()
 # Check the statistics of the dataset
 bank_data_describe = bank_data.describe()
 
-# 
+# Use sweetviz library to perform exploratory data analysis on the dataset
 report = sv.analyze(bank_data)
 report.show_html()
 
