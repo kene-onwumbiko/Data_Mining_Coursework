@@ -5,6 +5,7 @@ Created on Thu May  2 19:56:23 2024
 @author: keneo
 """
 
+import numpy as np
 import pandas as pd
 import sweetviz as sv
 
