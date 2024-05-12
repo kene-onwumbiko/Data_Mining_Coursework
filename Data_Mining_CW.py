@@ -8,7 +8,7 @@ Created on Thu May  2 19:56:23 2024
 import pandas as pd
 import sweetviz as sv
 
-# Import the dataset 
+# Import the dataset
 bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Churn-Records.csv")
 
 # Check the dataset info
