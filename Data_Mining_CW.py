@@ -7,6 +7,8 @@ Created on Thu May  2 19:56:23 2024
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 
 import pandas as pd
 import sweetviz as sv
@@ -38,12 +40,24 @@ new_bank_data = bank_data.drop(columns = ["RowNumber", "Surname", "Geography",
 # Insert the label at the end of the dataframe
 new_bank_data.insert(12, "Exited", bank_data["Exited"])
 
+# # Initialize OneHotEncoder
+# one_hot_encoder = OneHotEncoder()
+
+# Initialize LabelEncoder
+label_encoder = LabelEncoder()
+
+# # Fit and transform the column you want to encode
+# new_bank_data["Card Type"] = one_hot_encoder.fit_transform(new_bank_data["Card Type"])
+
+# Fit and transform the column you want to encode
+new_bank_data["Card Type"] = label_encoder.fit_transform(new_bank_data["Card Type"])
+
 # Separate the features and label 
 X = new_bank_data.iloc[:, :12]
 y = new_bank_data.iloc[:, 12]
 
 # Split the data into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.7, stratify = (y), 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = (y), 
                                                     random_state = 0)
 
 # Build a Random Forest Classifier
@@ -53,6 +67,8 @@ rf_model.fit(X_train, y_train)
 
 # Make the prediction
 y_pred_rf = rf_model.predict(X_test)
+
+
 
 
 
