@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import classification_report
 
 import pandas as pd
 import sweetviz as sv
@@ -68,7 +69,8 @@ rf_model.fit(X_train, y_train)
 # Make the prediction
 y_pred_rf = rf_model.predict(X_test)
 
-
+# Get the classification report for the model
+class_report_rf = classification_report(y_test, y_pred_rf)
 
 
 
