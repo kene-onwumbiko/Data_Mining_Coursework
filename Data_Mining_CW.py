@@ -7,9 +7,13 @@ Created on Thu May  2 19:56:23 2024
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import cross_validate
 
 import pandas as pd
 import sweetviz as sv
@@ -41,16 +45,8 @@ new_bank_data = bank_data.drop(columns = ["RowNumber", "Surname", "Geography",
 # Insert the label at the end of the dataframe
 new_bank_data.insert(12, "Exited", bank_data["Exited"])
 
-# # Initialize OneHotEncoder
-# one_hot_encoder = OneHotEncoder()
-
-# Initialize LabelEncoder
+# Use LabelEncoder to encode "Card Type"
 label_encoder = LabelEncoder()
-
-# # Fit and transform the column you want to encode
-# new_bank_data["Card Type"] = one_hot_encoder.fit_transform(new_bank_data["Card Type"])
-
-# Fit and transform the column you want to encode
 new_bank_data["Card Type"] = label_encoder.fit_transform(new_bank_data["Card Type"])
 
 # Separate the features and label 
@@ -72,8 +68,11 @@ y_pred_rf = rf_model.predict(X_test)
 # Get the classification report for the model
 class_report_rf = classification_report(y_test, y_pred_rf)
 
-
-
+# Get the cross-validation scores for the model
+score_rf = {"Accuracy": make_scorer(accuracy_score), 
+            "Precision": make_scorer(precision_score, average = "macro"),
+            "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
 
 
 
