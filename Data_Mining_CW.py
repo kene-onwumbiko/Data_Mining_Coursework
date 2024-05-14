@@ -41,20 +41,20 @@ report.show_html()
 
 ####################### WITH COMPLAIN COLUMN ########################
 # Drop features not necessary for building the model
-# Drop "RowNumber, Surname, Geography, Gender, Age, Exited"
-new_bank_data = bank_data.drop(columns = ["RowNumber", "Surname", "Geography", 
+# Drop "RowNumber, CustomerId, Surname, Geography, Gender, Age, Exited"
+new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", "Geography", 
                                           "Gender", "Age", "Exited"])
 
 # Insert the label at the end of the dataframe
-new_bank_data.insert(12, "Exited", bank_data["Exited"])
+new_bank_data.insert(11, "Exited", bank_data["Exited"])
 
 # Use LabelEncoder to encode "Card Type"
 label_encoder = LabelEncoder()
 new_bank_data["Card Type"] = label_encoder.fit_transform(new_bank_data["Card Type"])
 
 # Separate the features and label 
-X = new_bank_data.iloc[:, :12]
-y = new_bank_data.iloc[:, 12]
+X = new_bank_data.iloc[:, :-1]
+y = new_bank_data.iloc[:, -1]
 
 # Split the data into training and testing data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = (y), 
