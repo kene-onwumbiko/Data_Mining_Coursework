@@ -72,11 +72,11 @@ y_pred_rf = rf_model.predict(X_test)
 # Get the classification report for the model
 class_report_rf = classification_report(y_test, y_pred_rf)
 
-# Get the cross-validation scores for the model
-score_rf = {"Accuracy": make_scorer(accuracy_score), 
-            "Precision": make_scorer(precision_score, average = "macro"),
-            "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
+# # Get the cross-validation scores for the model
+# score_rf = {"Accuracy": make_scorer(accuracy_score), 
+#             "Precision": make_scorer(precision_score, average = "macro"),
+#             "Recall": make_scorer(recall_score, average = "macro")}
+# cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
 
 
 # Build a Stochastic Gradient Descent Classifier
@@ -90,11 +90,11 @@ y_pred_sgd = sgd_model.predict(X_test)
 # Get the classification report for the model
 class_report_sgd = classification_report(y_test, y_pred_sgd)
 
-# Get the cross-validation scores for the model
-score_sgd = {"Accuracy": make_scorer(accuracy_score), 
-             "Precision": make_scorer(precision_score, average = "macro"),
-             "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_sgd = cross_validate(sgd_model, X_train, y_train, cv = 5, scoring = score_sgd)
+# # Get the cross-validation scores for the model
+# score_sgd = {"Accuracy": make_scorer(accuracy_score), 
+#              "Precision": make_scorer(precision_score, average = "macro"),
+#              "Recall": make_scorer(recall_score, average = "macro")}
+# cross_validation_sgd = cross_validate(sgd_model, X_train, y_train, cv = 5, scoring = score_sgd)
 
 
 ####################### WITHOUT COMPLAIN COLUMN ########################
@@ -121,11 +121,11 @@ y2_pred_rf = rf_model2.predict(X2_test)
 # Get the classification report for the model
 class_report_rf2 = classification_report(y2_test, y2_pred_rf)
 
-# Get the cross-validation scores for the model
-score_rf2 = {"Accuracy": make_scorer(accuracy_score), 
-             "Precision": make_scorer(precision_score, average = "macro"),
-             "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf2 = cross_validate(rf_model2, X2_train, y2_train, cv = 5, scoring = score_rf2)
+# # Get the cross-validation scores for the model
+# score_rf2 = {"Accuracy": make_scorer(accuracy_score), 
+#              "Precision": make_scorer(precision_score, average = "macro"),
+#              "Recall": make_scorer(recall_score, average = "macro")}
+# cross_validation_rf2 = cross_validate(rf_model2, X2_train, y2_train, cv = 5, scoring = score_rf2)
 
 
 # Build a Stochastic Gradient Descent Classifier
@@ -139,11 +139,11 @@ y2_pred_sgd = sgd_model2.predict(X2_test)
 # Get the classification report for the model
 class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
 
-# Get the cross-validation scores for the model
-score_sgd2 = {"Accuracy": make_scorer(accuracy_score), 
-              "Precision": make_scorer(precision_score, average = "macro"),
-              "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_sgd2 = cross_validate(sgd_model2, X2_train, y2_train, cv = 5, scoring = score_sgd2)
+# # Get the cross-validation scores for the model
+# score_sgd2 = {"Accuracy": make_scorer(accuracy_score), 
+#               "Precision": make_scorer(precision_score, average = "macro"),
+#               "Recall": make_scorer(recall_score, average = "macro")}
+# cross_validation_sgd2 = cross_validate(sgd_model2, X2_train, y2_train, cv = 5, scoring = score_sgd2)
 
 
 
