@@ -142,6 +142,10 @@ X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.2,
                                                         random_state = 0)
 
 
+
+
+
+########## BEFORE BALANCING THE DATA ##########
 ########## Random Forest Classifier ##########
 # Train the model
 rf_model2 = RandomForestClassifier(n_estimators = 100)
@@ -169,15 +173,13 @@ class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
 
 
 
-
-
-
-
-
+########## AFTER BALANCING THE DATA ##########
+# Initiate SMOTE Algorithm to balance the data
 sm = SMOTE(random_state = 2)
 X2_train_sm, y2_train_sm = sm.fit_resample(X2_train, y2_train) 
 
-# Build a Random Forest Classifier
+
+########## Random Forest Classifier ##########
 # Train the model
 rf_model2_sm = RandomForestClassifier(n_estimators = 100)
 rf_model2_sm.fit(X2_train_sm, y2_train_sm)
@@ -189,6 +191,16 @@ y2_pred_rf_sm = rf_model2_sm.predict(X2_test)
 class_report_rf2_sm = classification_report(y2_test, y2_pred_rf_sm)
 
 
+########## Stochastic Gradient Descent Classifier ##########
+# Train the model
+sgd_model2_sm = SGDClassifier()
+sgd_model2_sm.fit(X2_train_sm, y2_train_sm)
+
+# Make the prediction
+y2_pred_sgd_sm = sgd_model2_sm.predict(X2_test)
+
+# Get the classification report for the model
+class_report_sgd2_sm = classification_report(y2_test, y2_pred_sgd_sm)
 
 
 
