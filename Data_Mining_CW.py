@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
+from imblearn.over_sampling import SMOTE
 
 import pandas as pd
 import sweetviz as sv
@@ -120,6 +121,52 @@ y2_pred_sgd = sgd_model2.predict(X2_test)
 
 # Get the classification report for the model
 class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
+
+
+
+
+
+
+
+sm = SMOTE(random_state = 2)
+X_train_sm, y_train_sm = sm.fit_resample(X_train, y_train) 
+
+# Build a Random Forest Classifier
+# Train the model
+rf_model_sm = RandomForestClassifier(n_estimators = 100)
+rf_model_sm.fit(X_train_sm, y_train_sm)
+
+# Make the prediction
+y_pred_rf_sm = rf_model_sm.predict(X_test)
+
+# Get the classification report for the model
+class_report_rf_sm = classification_report(y_test, y_pred_rf_sm)
+
+
+sm = SMOTE(random_state = 2)
+X2_train_sm, y2_train_sm = sm.fit_resample(X2_train, y2_train) 
+
+# Build a Random Forest Classifier
+# Train the model
+rf_model2_sm = RandomForestClassifier(n_estimators = 100)
+rf_model2_sm.fit(X2_train_sm, y2_train_sm)
+
+# Make the prediction
+y2_pred_rf_sm = rf_model2_sm.predict(X2_test)
+
+# Get the classification report for the model
+class_report_rf2_sm = classification_report(y2_test, y2_pred_rf_sm)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
