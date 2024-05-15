@@ -8,7 +8,6 @@ Created on Thu May  2 19:56:23 2024
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
-from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_score
@@ -48,9 +47,15 @@ new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", 
 # Insert the label at the end of the dataframe
 new_bank_data.insert(11, "Exited", bank_data["Exited"])
 
-# Use LabelEncoder to encode "Card Type"
-label_encoder = LabelEncoder()
-new_bank_data["Card Type"] = label_encoder.fit_transform(new_bank_data["Card Type"])
+# Create a function to replace the values of "Card Type" to numeric with rank
+def replace_CardType(a):
+    return a.replace({"PLATINUM": 3,
+                      "DIAMOND": 2,
+                      "GOLD": 1,
+                      "SILVER": 0})
+
+# Call the function on the "Card Type"
+new_bank_data["Card Type"] = replace_CardType(new_bank_data["Card Type"])
 
 # Separate the features and label 
 X = new_bank_data.iloc[:, :-1]
@@ -72,12 +77,6 @@ y_pred_rf = rf_model.predict(X_test)
 # Get the classification report for the model
 class_report_rf = classification_report(y_test, y_pred_rf)
 
-# # Get the cross-validation scores for the model
-# score_rf = {"Accuracy": make_scorer(accuracy_score), 
-#             "Precision": make_scorer(precision_score, average = "macro"),
-#             "Recall": make_scorer(recall_score, average = "macro")}
-# cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
-
 
 # Build a Stochastic Gradient Descent Classifier
 # Train the model
@@ -90,20 +89,14 @@ y_pred_sgd = sgd_model.predict(X_test)
 # Get the classification report for the model
 class_report_sgd = classification_report(y_test, y_pred_sgd)
 
-# # Get the cross-validation scores for the model
-# score_sgd = {"Accuracy": make_scorer(accuracy_score), 
-#              "Precision": make_scorer(precision_score, average = "macro"),
-#              "Recall": make_scorer(recall_score, average = "macro")}
-# cross_validation_sgd = cross_validate(sgd_model, X_train, y_train, cv = 5, scoring = score_sgd)
-
 
 ####################### WITHOUT COMPLAIN COLUMN ########################
 # Drop "Complain" column
 bank_data_without_complain = new_bank_data.drop(columns = "Complain")
 
 # Separate the features and label 
-X2 = bank_data_without_complain.iloc[:, :11]
-y2 = bank_data_without_complain.iloc[:, 11]
+X2 = bank_data_without_complain.iloc[:, :-1]
+y2 = bank_data_without_complain.iloc[:, -1]
 
 # Split the data into training and testing data
 X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.2, stratify = (y2), 
@@ -121,12 +114,6 @@ y2_pred_rf = rf_model2.predict(X2_test)
 # Get the classification report for the model
 class_report_rf2 = classification_report(y2_test, y2_pred_rf)
 
-# # Get the cross-validation scores for the model
-# score_rf2 = {"Accuracy": make_scorer(accuracy_score), 
-#              "Precision": make_scorer(precision_score, average = "macro"),
-#              "Recall": make_scorer(recall_score, average = "macro")}
-# cross_validation_rf2 = cross_validate(rf_model2, X2_train, y2_train, cv = 5, scoring = score_rf2)
-
 
 # Build a Stochastic Gradient Descent Classifier
 # Train the model
@@ -139,11 +126,6 @@ y2_pred_sgd = sgd_model2.predict(X2_test)
 # Get the classification report for the model
 class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
 
-# # Get the cross-validation scores for the model
-# score_sgd2 = {"Accuracy": make_scorer(accuracy_score), 
-#               "Precision": make_scorer(precision_score, average = "macro"),
-#               "Recall": make_scorer(recall_score, average = "macro")}
-# cross_validation_sgd2 = cross_validate(sgd_model2, X2_train, y2_train, cv = 5, scoring = score_sgd2)
 
 
 
