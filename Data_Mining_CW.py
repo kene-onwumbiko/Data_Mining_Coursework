@@ -34,6 +34,9 @@ report = sv.analyze(bank_data)
 report.show_html()
 
 
+
+
+
 ####################### WITH COMPLAIN COLUMN ########################
 # Drop features not necessary for building the model
 # Drop "RowNumber, CustomerId, Surname, Geography, Gender, Age, Exited"
@@ -62,7 +65,11 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, strat
                                                     random_state = 0)
 
 
-# Build a Random Forest Classifier
+
+
+
+########## BEFORE BALANCING THE DATA ##########
+########## Random Forest Classifier ##########
 # Train the model
 rf_model = RandomForestClassifier(n_estimators = 100)
 rf_model.fit(X_train, y_train)
@@ -74,7 +81,7 @@ y_pred_rf = rf_model.predict(X_test)
 class_report_rf = classification_report(y_test, y_pred_rf)
 
 
-# Build a Stochastic Gradient Descent Classifier
+########## Stochastic Gradient Descent Classifier #########
 # Train the model
 sgd_model = SGDClassifier()
 sgd_model.fit(X_train, y_train)
@@ -84,6 +91,42 @@ y_pred_sgd = sgd_model.predict(X_test)
 
 # Get the classification report for the model
 class_report_sgd = classification_report(y_test, y_pred_sgd)
+
+
+
+
+
+########## AFTER BALANCING THE DATA ##########
+# Initiate SMOTE Algorithm to balance the data
+sm = SMOTE(random_state = 2)
+X_train_sm, y_train_sm = sm.fit_resample(X_train, y_train) 
+
+
+########## Random Forest Classifier ##########
+# Train the model
+rf_model_sm = RandomForestClassifier(n_estimators = 100)
+rf_model_sm.fit(X_train_sm, y_train_sm)
+
+# Make the prediction
+y_pred_rf_sm = rf_model_sm.predict(X_test)
+
+# Get the classification report for the model
+class_report_rf_sm = classification_report(y_test, y_pred_rf_sm)
+
+
+########## Stochastic Gradient Descent Classifier #########
+# Train the model
+sgd_model_sm = SGDClassifier()
+sgd_model_sm.fit(X_train_sm, y_train_sm)
+
+# Make the prediction
+y_pred_sgd_sm = sgd_model_sm.predict(X_test)
+
+# Get the classification report for the model
+class_report_sgd_sm = classification_report(y_test, y_pred_sgd_sm)
+
+
+
 
 
 ####################### WITHOUT COMPLAIN COLUMN ########################
@@ -99,7 +142,7 @@ X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.2,
                                                         random_state = 0)
 
 
-# Build a Random Forest Classifier
+########## Random Forest Classifier ##########
 # Train the model
 rf_model2 = RandomForestClassifier(n_estimators = 100)
 rf_model2.fit(X2_train, y2_train)
@@ -111,7 +154,7 @@ y2_pred_rf = rf_model2.predict(X2_test)
 class_report_rf2 = classification_report(y2_test, y2_pred_rf)
 
 
-# Build a Stochastic Gradient Descent Classifier
+########## Stochastic Gradient Descent Classifier ##########
 # Train the model
 sgd_model2 = SGDClassifier()
 sgd_model2.fit(X2_train, y2_train)
@@ -128,19 +171,7 @@ class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
 
 
 
-sm = SMOTE(random_state = 2)
-X_train_sm, y_train_sm = sm.fit_resample(X_train, y_train) 
 
-# Build a Random Forest Classifier
-# Train the model
-rf_model_sm = RandomForestClassifier(n_estimators = 100)
-rf_model_sm.fit(X_train_sm, y_train_sm)
-
-# Make the prediction
-y_pred_rf_sm = rf_model_sm.predict(X_test)
-
-# Get the classification report for the model
-class_report_rf_sm = classification_report(y_test, y_pred_rf_sm)
 
 
 sm = SMOTE(random_state = 2)
