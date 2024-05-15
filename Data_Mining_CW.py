@@ -9,11 +9,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import SGDClassifier
 from sklearn.metrics import classification_report
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import make_scorer
-from sklearn.model_selection import cross_validate
 
 import pandas as pd
 import sweetviz as sv
