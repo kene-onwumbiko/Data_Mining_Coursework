@@ -7,7 +7,7 @@ Created on Thu May  2 19:56:23 2024
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 
@@ -71,7 +71,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, strat
 ########## BEFORE BALANCING THE DATA ##########
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model = RandomForestClassifier(n_estimators = 100)
+rf_model = RandomForestClassifier()
 rf_model.fit(X_train, y_train)
 
 # Make the prediction
@@ -81,16 +81,16 @@ y_pred_rf = rf_model.predict(X_test)
 class_report_rf = classification_report(y_test, y_pred_rf)
 
 
-########## Decision Tree Classifier #########
+########## Gradient Boosting Classifier #########
 # Train the model
-dt_model = DecisionTreeClassifier()
-dt_model.fit(X_train, y_train)
+gb_model = GradientBoostingClassifier()
+gb_model.fit(X_train, y_train)
 
 # Make the prediction
-y_pred_dt = dt_model.predict(X_test)
+y_pred_gb = gb_model.predict(X_test)
 
 # Get the classification report for the model
-class_report_dt = classification_report(y_test, y_pred_dt)
+class_report_gb = classification_report(y_test, y_pred_gb)
 
 
 
