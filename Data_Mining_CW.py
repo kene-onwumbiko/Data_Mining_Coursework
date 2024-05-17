@@ -98,13 +98,13 @@ class_report_gb = classification_report(y_test, y_pred_gb)
 
 ########## AFTER BALANCING THE DATA ##########
 # Initiate SMOTE Algorithm to balance the data
-sm = SMOTE(random_state = 2)
+sm = SMOTE()
 X_train_sm, y_train_sm = sm.fit_resample(X_train, y_train) 
 
 
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model_sm = RandomForestClassifier(n_estimators = 100)
+rf_model_sm = RandomForestClassifier()
 rf_model_sm.fit(X_train_sm, y_train_sm)
 
 # Make the prediction
@@ -114,16 +114,16 @@ y_pred_rf_sm = rf_model_sm.predict(X_test)
 class_report_rf_sm = classification_report(y_test, y_pred_rf_sm)
 
 
-########## Stochastic Gradient Descent Classifier #########
+########## Gradient Boosting Classifier #########
 # Train the model
-sgd_model_sm = SGDClassifier()
-sgd_model_sm.fit(X_train_sm, y_train_sm)
+gb_model_sm = GradientBoostingClassifier()
+gb_model_sm.fit(X_train_sm, y_train_sm)
 
 # Make the prediction
-y_pred_sgd_sm = sgd_model_sm.predict(X_test)
+y_pred_gb_sm = gb_model_sm.predict(X_test)
 
 # Get the classification report for the model
-class_report_sgd_sm = classification_report(y_test, y_pred_sgd_sm)
+class_report_gb_sm = classification_report(y_test, y_pred_gb_sm)
 
 
 
@@ -138,7 +138,7 @@ X2 = bank_data_without_complain.iloc[:, :-1]
 y2 = bank_data_without_complain.iloc[:, -1]
 
 # Split the data into training and testing data
-X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.2, stratify = (y2), 
+X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.3, stratify = (y2), 
                                                         random_state = 0)
 
 
