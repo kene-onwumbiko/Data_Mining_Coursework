@@ -148,7 +148,7 @@ X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.3,
 ########## BEFORE BALANCING THE DATA ##########
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model2 = RandomForestClassifier(n_estimators = 100)
+rf_model2 = RandomForestClassifier()
 rf_model2.fit(X2_train, y2_train)
 
 # Make the prediction
@@ -158,24 +158,23 @@ y2_pred_rf = rf_model2.predict(X2_test)
 class_report_rf2 = classification_report(y2_test, y2_pred_rf)
 
 
-########## Stochastic Gradient Descent Classifier ##########
+########## Gradient Boosting Classifier ##########
 # Train the model
-sgd_model2 = SGDClassifier()
-sgd_model2.fit(X2_train, y2_train)
+gb_model2 = GradientBoostingClassifier()
+gb_model2.fit(X2_train, y2_train)
 
 # Make the prediction
-y2_pred_sgd = sgd_model2.predict(X2_test)
+y2_pred_gb = gb_model2.predict(X2_test)
 
 # Get the classification report for the model
-class_report_sgd2 = classification_report(y2_test, y2_pred_sgd)
+class_report_gb2 = classification_report(y2_test, y2_pred_gb)
 
 
 
 
 
 ########## AFTER BALANCING THE DATA ##########
-# Initiate SMOTE Algorithm to balance the data
-sm = SMOTE(random_state = 2)
+# Balance the data
 X2_train_sm, y2_train_sm = sm.fit_resample(X2_train, y2_train) 
 
 
