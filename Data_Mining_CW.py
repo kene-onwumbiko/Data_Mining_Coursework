@@ -180,7 +180,7 @@ X2_train_sm, y2_train_sm = sm.fit_resample(X2_train, y2_train)
 
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model2_sm = RandomForestClassifier(n_estimators = 100)
+rf_model2_sm = RandomForestClassifier()
 rf_model2_sm.fit(X2_train_sm, y2_train_sm)
 
 # Make the prediction
@@ -190,16 +190,16 @@ y2_pred_rf_sm = rf_model2_sm.predict(X2_test)
 class_report_rf2_sm = classification_report(y2_test, y2_pred_rf_sm)
 
 
-########## Stochastic Gradient Descent Classifier ##########
+########## Gradient Boosting Classifier ##########
 # Train the model
-sgd_model2_sm = SGDClassifier()
-sgd_model2_sm.fit(X2_train_sm, y2_train_sm)
+gb_model2_sm = GradientBoostingClassifier()
+gb_model2_sm.fit(X2_train_sm, y2_train_sm)
 
 # Make the prediction
-y2_pred_sgd_sm = sgd_model2_sm.predict(X2_test)
+y2_pred_gb_sm = gb_model2_sm.predict(X2_test)
 
 # Get the classification report for the model
-class_report_sgd2_sm = classification_report(y2_test, y2_pred_sgd_sm)
+class_report_gb2_sm = classification_report(y2_test, y2_pred_gb_sm)
 
 
 
