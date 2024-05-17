@@ -7,7 +7,7 @@ Created on Thu May  2 19:56:23 2024
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import SGDClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 
@@ -61,7 +61,7 @@ X = new_bank_data.iloc[:, :-1]
 y = new_bank_data.iloc[:, -1]
 
 # Split the data into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, stratify = (y), 
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, stratify = (y), 
                                                     random_state = 0)
 
 
@@ -81,16 +81,16 @@ y_pred_rf = rf_model.predict(X_test)
 class_report_rf = classification_report(y_test, y_pred_rf)
 
 
-########## Stochastic Gradient Descent Classifier #########
+########## Decision Tree Classifier #########
 # Train the model
-sgd_model = SGDClassifier()
-sgd_model.fit(X_train, y_train)
+dt_model = DecisionTreeClassifier()
+dt_model.fit(X_train, y_train)
 
 # Make the prediction
-y_pred_sgd = sgd_model.predict(X_test)
+y_pred_dt = dt_model.predict(X_test)
 
 # Get the classification report for the model
-class_report_sgd = classification_report(y_test, y_pred_sgd)
+class_report_dt = classification_report(y_test, y_pred_dt)
 
 
 
