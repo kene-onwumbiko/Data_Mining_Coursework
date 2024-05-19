@@ -8,6 +8,7 @@ Created on Thu May  2 19:56:23 2024
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 
@@ -203,6 +204,22 @@ class_report_gb2_sm = classification_report(y2_test, y2_pred_gb_sm)
 
 
 
+
+
+
+
+
+
+########## Decision Tree Classifier ##########
+# Train the model
+dt_model2_sm = DecisionTreeClassifier()
+dt_model2_sm.fit(X2_train_sm, y2_train_sm)
+
+# Make the prediction
+y2_pred_dt_sm = dt_model2_sm.predict(X2_test)
+
+# Get the classification report for the model
+class_report_dt2_sm = classification_report(y2_test, y2_pred_dt_sm)
 
 
 
