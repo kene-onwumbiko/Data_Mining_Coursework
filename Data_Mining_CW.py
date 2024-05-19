@@ -210,16 +210,6 @@ class_report_gb2_sm = classification_report(y2_test, y2_pred_gb_sm)
 
 
 
-# ########## Decision Tree Classifier ##########
-# # Train the model
-# dt_model2_sm = DecisionTreeClassifier()
-# dt_model2_sm.fit(X2_train_sm, y2_train_sm)
-
-# # Make the prediction
-# y2_pred_dt_sm = dt_model2_sm.predict(X2_test)
-
-# # Get the classification report for the model
-# class_report_dt2_sm = classification_report(y2_test, y2_pred_dt_sm)
 
 
 
