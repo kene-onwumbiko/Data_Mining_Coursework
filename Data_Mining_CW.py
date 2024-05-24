@@ -34,8 +34,8 @@ bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Chur
 # report = sv.analyze(bank_data)
 # report.show_html()
 
-profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
-
+bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
+bank_profile.to_file("bank_churn.html")
 
 
 
