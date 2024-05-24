@@ -12,7 +12,7 @@ from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 
 import pandas as pd
-from pandas_profiling import ProfileReport
+from ydata_profiling import ProfileReport
 # import sweetviz as sv
 
 # Import the dataset
@@ -34,7 +34,7 @@ bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Chur
 # report = sv.analyze(bank_data)
 # report.show_html()
 
-
+profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
 
 
 
