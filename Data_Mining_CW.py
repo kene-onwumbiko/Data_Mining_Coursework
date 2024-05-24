@@ -8,31 +8,34 @@ Created on Thu May  2 19:56:23 2024
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 
 import pandas as pd
-import sweetviz as sv
+from pandas_profiling import ProfileReport
+# import sweetviz as sv
 
 # Import the dataset
 bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Churn-Records.csv")
 
-# Check the dataset info
-bank_data_info = bank_data.info()
+# # Check the dataset info
+# bank_data_info = bank_data.info()
 
-# Check for missing values
-bank_data_missing = bank_data.isnull().sum()
+# # Check for missing values
+# bank_data_missing = bank_data.isnull().sum()
 
-# Check for duplicated values
-bank_data_duplicated = bank_data.duplicated().sum()
+# # Check for duplicated values
+# bank_data_duplicated = bank_data.duplicated().sum()
 
-# Check the statistics of the dataset
-bank_data_describe = bank_data.describe()
+# # Check the statistics of the dataset
+# bank_data_describe = bank_data.describe()
 
-# Use sweetviz library to perform exploratory data analysis on the dataset
-report = sv.analyze(bank_data)
-report.show_html()
+# # Use sweetviz library to perform exploratory data analysis on the dataset
+# report = sv.analyze(bank_data)
+# report.show_html()
+
+
+
 
 
 
