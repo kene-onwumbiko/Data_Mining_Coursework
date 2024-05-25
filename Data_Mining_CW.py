@@ -53,7 +53,7 @@ new_bank_data["Balance"] = np.log(new_bank_data["Balance"])
 
 
 # Data Transformation
-# Initialise LabelEncoder
+# Initialise LabelEncoder to encode the categorical values
 label_encoder = LabelEncoder()
 
 # Convert "Geography and Gender" to numeric values using LabelEncoder
@@ -113,7 +113,7 @@ score_rf = {"Accuracy": make_scorer(accuracy_score),
             "Precision": make_scorer(precision_score, average = "macro"),
             "Recall": make_scorer(recall_score, average = "macro")}
 cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
-print(cross_validation_rf)
+cross_validation_rf = pd.DataFrame(cross_validation_rf)
 
 
 
@@ -144,14 +144,15 @@ score_gb = {"Accuracy": make_scorer(accuracy_score),
             "Precision": make_scorer(precision_score, average = "macro"),
             "Recall": make_scorer(recall_score, average = "macro")}
 cross_validation_gb = cross_validate(gb_model, X_train, y_train, cv = 5, scoring = score_gb)
-print(cross_validation_gb)
+cross_validation_gb = pd.DataFrame(cross_validation_gb)
 
 
 
 
 
 ########## AFTER BALANCING THE DATA ##########
-# Initiate ADASYN Algorithm to balance the data
+# Handle Class Imbalance
+# Initialise ADASYN Algorithm to balance the data
 adasyn = ADASYN(sampling_strategy = "minority")
 X_train_balanced, y_train_balanced = adasyn.fit_resample(X_train, y_train) 
 
