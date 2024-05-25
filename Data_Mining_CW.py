@@ -42,10 +42,9 @@ bank_profile.to_file("bank_churn.html")
 
 
 ####################### WITH COMPLAIN COLUMN ########################
-# Drop features not necessary for building the model
-# Drop "RowNumber, CustomerId, Surname, Geography, Gender, Age, Exited"
-new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", "Geography", 
-                                          "Gender", "Age", "Exited"])
+# Drop "RowNumber, CustomerId, and Surname"
+# Drop "Exited" and reinsert as the last column
+new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", "Exited"])
 
 # Insert the label at the end of the dataframe
 new_bank_data.insert(11, "Exited", bank_data["Exited"])
