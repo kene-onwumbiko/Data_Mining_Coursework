@@ -22,27 +22,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from ydata_profiling import ProfileReport
-# import sweetviz as sv
 
 # Import the dataset
 bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Churn-Records.csv")
 
-# # Check the dataset info
-# bank_data_info = bank_data.info()
-
-# # Check for missing values
-# bank_data_missing = bank_data.isnull().sum()
-
-# # Check for duplicated values
-# bank_data_duplicated = bank_data.duplicated().sum()
-
-# # Check the statistics of the dataset
-# bank_data_describe = bank_data.describe()
-
-# # Use sweetviz library to perform exploratory data analysis on the dataset
-# report = sv.analyze(bank_data)
-# report.show_html()
-
+# Use YData-profiling library to perform exploratory data analysis on the dataset
 bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
 bank_profile.to_file("bank_churn.html")
 
@@ -51,34 +35,43 @@ bank_profile.to_file("bank_churn.html")
 
 
 ####################### WITH COMPLAIN COLUMN ########################
+# Drop Irrelevant Columns
 # Drop "RowNumber, CustomerId, and Surname"
-# Drop "Exited" and reinsert as the last column
+# Drop "Exited" and reinsert as the last column in the dataset
 new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", "Exited"])
 
-# Insert the label at the end of the dataframe
+# Insert "Exited" as the last column in the dataset
 new_bank_data.insert(14, "Exited", bank_data["Exited"])
 
+
+# Handle Zero-inflated Distribution in the Dataset
+# Replace the zeros in "Balance" with the value 10 
 new_bank_data["Balance"] = new_bank_data["Balance"].replace({0: 10})
 
+# Replace the values of "Balance" with the log
 new_bank_data["Balance"] = np.log(new_bank_data["Balance"])
 
-# Initialize LabelEncoder
+
+# Data Transformation
+# Initialise LabelEncoder
 label_encoder = LabelEncoder()
 
-# Convert "Geography and Gender" to numeric
+# Convert "Geography and Gender" to numeric values using LabelEncoder
 new_bank_data["Geography"] = label_encoder.fit_transform(new_bank_data["Geography"])
 new_bank_data["Gender"] = label_encoder.fit_transform(new_bank_data["Gender"])
 
-# Create a function to replace the values of "Card Type" to numeric with rank
+# Create a function to replace the values of "Card Type" to numeric
 def replace_CardType(a):
     return a.replace({"PLATINUM": 3,
                       "DIAMOND": 2,
                       "GOLD": 1,
                       "SILVER": 0})
 
-# Call the function on the "Card Type"
+# Call the function on "Card Type"
 new_bank_data["Card Type"] = replace_CardType(new_bank_data["Card Type"])
 
+
+# Split the Dataset
 # Separate the features and label 
 X = new_bank_data.iloc[:, :-1]
 y = new_bank_data.iloc[:, -1]
@@ -86,7 +79,7 @@ y = new_bank_data.iloc[:, -1]
 # Split the data into training and testing data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.5, stratify = (y))
 
-# Split the training data into validation and training data
+# Further split the training data into validation and training data
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.33, 
                                                               stratify = (y_train))
 
@@ -112,7 +105,7 @@ confusion_matrix_rf = confusion_matrix(y_test, y_pred_rf)
 confusion_matrix_display_rf = ConfusionMatrixDisplay(confusion_matrix_rf, 
                                                      display_labels = rf_model.classes_)
 confusion_matrix_display_rf.plot()
-plt.title("Confusion Matrix for Randon Forest")
+plt.title("Confusion Matrix for Randon Forest (Before Balancing the Data)")
 plt.show()
 
 # Get the cross-validation scores for the model
