@@ -182,8 +182,12 @@ X2 = bank_data_without_complain.iloc[:, :-1]
 y2 = bank_data_without_complain.iloc[:, -1]
 
 # Split the data into training and testing data
-X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.3, stratify = (y2), 
-                                                        random_state = 0)
+X2_train, X2_test, y2_train, y2_test = train_test_split(X2, y2, test_size = 0.5, stratify = (y2))
+
+# Split the training data into validation and training data
+X2_train, X2_val, y2_train, y2_val = train_test_split(X2_train, y2_train, test_size = 0.33, 
+                                                      stratify = (y2_train))
+
 
 
 
@@ -200,6 +204,27 @@ y2_pred_rf = rf_model2.predict(X2_test)
 
 # Get the classification report for the model
 class_report_rf2 = classification_report(y2_test, y2_pred_rf)
+
+# Get the confusion matrix for the model
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf2 = confusion_matrix(y2_test, y2_pred_rf)
+confusion_matrix_display_rf2 = ConfusionMatrixDisplay(confusion_matrix_rf2, 
+                                                      display_labels = rf_model2.classes_)
+confusion_matrix_display_rf2.plot()
+plt.title("Confusion Matrix for Randon Forest")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_rf2 = {"Accuracy": make_scorer(accuracy_score), 
+             "Precision": make_scorer(precision_score, average = "macro"),
+             "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_rf2 = cross_validate(rf_model2, X2_train, y2_train, cv = 5, scoring = score_rf2)
+print(cross_validation_rf2)
+
+
+
+
+
 
 
 ########## Gradient Boosting Classifier ##########
