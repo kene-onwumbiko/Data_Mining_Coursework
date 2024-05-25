@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import ADASYN
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score
@@ -141,33 +141,33 @@ class_report_gb = classification_report(y_test, y_pred_gb)
 
 
 ########## AFTER BALANCING THE DATA ##########
-# Initiate SMOTE Algorithm to balance the data
-sm = SMOTE()
-X_train_sm, y_train_sm = sm.fit_resample(X_train, y_train) 
+# Initiate ADASYN Algorithm to balance the data
+adasyn = ADASYN()
+X_train_balanced, y_train_balanced = adasyn.fit_resample(X_train, y_train) 
 
 
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model_sm = RandomForestClassifier()
-rf_model_sm.fit(X_train_sm, y_train_sm)
+rf_model_balanced = RandomForestClassifier()
+rf_model_balanced.fit(X_train_balanced, y_train_balanced)
 
 # Make the prediction
-y_pred_rf_sm = rf_model_sm.predict(X_test)
+y_pred_rf_balanced = rf_model_balanced.predict(X_test)
 
 # Get the classification report for the model
-class_report_rf_sm = classification_report(y_test, y_pred_rf_sm)
+class_report_rf_balanced = classification_report(y_test, y_pred_rf_balanced)
 
 
 ########## Gradient Boosting Classifier #########
 # Train the model
-gb_model_sm = GradientBoostingClassifier()
-gb_model_sm.fit(X_train_sm, y_train_sm)
+gb_model_balanced = GradientBoostingClassifier()
+gb_model_balanced.fit(X_train_balanced, y_train_balanced)
 
 # Make the prediction
-y_pred_gb_sm = gb_model_sm.predict(X_test)
+y_pred_gb_balanced = gb_model_balanced.predict(X_test)
 
 # Get the classification report for the model
-class_report_gb_sm = classification_report(y_test, y_pred_gb_sm)
+class_report_gb_balanced = classification_report(y_test, y_pred_gb_balanced)
 
 
 
@@ -244,31 +244,31 @@ class_report_gb2 = classification_report(y2_test, y2_pred_gb)
 
 ########## AFTER BALANCING THE DATA ##########
 # Balance the data
-X2_train_sm, y2_train_sm = sm.fit_resample(X2_train, y2_train) 
+X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train, y2_train) 
 
 
 ########## Random Forest Classifier ##########
 # Train the model
-rf_model2_sm = RandomForestClassifier()
-rf_model2_sm.fit(X2_train_sm, y2_train_sm)
+rf_model2_balanced = RandomForestClassifier()
+rf_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the prediction
-y2_pred_rf_sm = rf_model2_sm.predict(X2_test)
+y2_pred_rf_balanced = rf_model2_balanced.predict(X2_test)
 
 # Get the classification report for the model
-class_report_rf2_sm = classification_report(y2_test, y2_pred_rf_sm)
+class_report_rf2_balanced = classification_report(y2_test, y2_pred_rf_balanced)
 
 
 ########## Gradient Boosting Classifier ##########
 # Train the model
-gb_model2_sm = GradientBoostingClassifier()
-gb_model2_sm.fit(X2_train_sm, y2_train_sm)
+gb_model2_balanced = GradientBoostingClassifier()
+gb_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the prediction
-y2_pred_gb_sm = gb_model2_sm.predict(X2_test)
+y2_pred_gb_balanced = gb_model2_balanced.predict(X2_test)
 
 # Get the classification report for the model
-class_report_gb2_sm = classification_report(y2_test, y2_pred_gb_sm)
+class_report_gb2_balanced = classification_report(y2_test, y2_pred_gb_balanced)
 
 
 
