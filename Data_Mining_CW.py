@@ -45,11 +45,11 @@ new_bank_data.insert(14, "Exited", bank_data["Exited"])
 
 
 # Handle Zero-inflated Distribution in the Dataset
-# Replace the zeros in "Balance" with the value 10 
-new_bank_data["Balance"] = new_bank_data["Balance"].replace({0: 10})
-
 # Replace the values of "Balance" with the log
 new_bank_data["Balance"] = np.log(new_bank_data["Balance"])
+
+# Replace the -inf values with -1
+new_bank_data["Balance"] = new_bank_data["Balance"].replace({-np.inf: -1})
 
 
 # Data Transformation
@@ -76,12 +76,12 @@ new_bank_data["Card Type"] = replace_CardType(new_bank_data["Card Type"])
 X = new_bank_data.iloc[:, :-1]
 y = new_bank_data.iloc[:, -1]
 
-# Split the data into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.5, stratify = (y))
+# Split the data into training+validation and testing data
+X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size = 0.5, stratify = (y))
 
-# Further split the training data into validation and training data
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.33, 
-                                                              stratify = (y_train))
+# Further split the training+validation data into training and validation data
+X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size = 0.33, 
+                                                  stratify = (y_train_val))
 
 
 
@@ -93,19 +93,34 @@ X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 
 rf_model = RandomForestClassifier()
 rf_model.fit(X_train, y_train)
 
-# Make the prediction
-y_pred_rf = rf_model.predict(X_test)
+# Make the predictions on the validation data
+y_val_pred_rf = rf_model.predict(X_val)
 
-# Get the classification report for the model
-class_report_rf = classification_report(y_test, y_pred_rf)
+# Get the classification report for the validation data
+class_report_rf_val = classification_report(y_val, y_val_pred_rf)
 
-# Get the confusion matrix for the model
+# Get the confusion matrix for the validation data
 plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf = confusion_matrix(y_test, y_pred_rf)
-confusion_matrix_display_rf = ConfusionMatrixDisplay(confusion_matrix_rf, 
-                                                     display_labels = rf_model.classes_)
-confusion_matrix_display_rf.plot()
-plt.title("Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
+confusion_matrix_rf_val = confusion_matrix(y_val, y_val_pred_rf)
+confusion_matrix_display_rf_val = ConfusionMatrixDisplay(confusion_matrix_rf_val, 
+                                                         display_labels = rf_model.classes_)
+confusion_matrix_display_rf_val.plot()
+plt.title("Validation Data Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Make the predictions on the test data
+y_test_pred_rf = rf_model.predict(X_test)
+
+# Get the classification report for the test data
+class_report_rf_test = classification_report(y_test, y_test_pred_rf)
+
+# Get the confusion matrix for the test data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf_test = confusion_matrix(y_test, y_test_pred_rf)
+confusion_matrix_display_rf_test = ConfusionMatrixDisplay(confusion_matrix_rf_test, 
+                                                          display_labels = rf_model.classes_)
+confusion_matrix_display_rf_test.plot()
+plt.title("Test Data Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
 plt.show()
 
 # Get the cross-validation scores for the model
