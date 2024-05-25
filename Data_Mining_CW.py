@@ -105,7 +105,7 @@ confusion_matrix_rf = confusion_matrix(y_test, y_pred_rf)
 confusion_matrix_display_rf = ConfusionMatrixDisplay(confusion_matrix_rf, 
                                                      display_labels = rf_model.classes_)
 confusion_matrix_display_rf.plot()
-plt.title("Confusion Matrix for Random Forest (Before Balancing the Data)")
+plt.title("Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
 plt.show()
 
 # Get the cross-validation scores for the model
@@ -136,7 +136,7 @@ confusion_matrix_gb = confusion_matrix(y_test, y_pred_gb)
 confusion_matrix_display_gb = ConfusionMatrixDisplay(confusion_matrix_gb, 
                                                      display_labels = gb_model.classes_)
 confusion_matrix_display_gb.plot()
-plt.title("Confusion Matrix for Gradient Boosting (Before Balancing the Data)")
+plt.title("Confusion Matrix for Gradient Boosting \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
 plt.show()
 
 # Get the cross-validation scores for the model
@@ -168,6 +168,26 @@ y_pred_rf_balanced = rf_model_balanced.predict(X_test)
 # Get the classification report for the model
 class_report_rf_balanced = classification_report(y_test, y_pred_rf_balanced)
 
+# Get the confusion matrix for the model
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf_balanced = confusion_matrix(y_test, y_pred_rf_balanced)
+confusion_matrix_display_rf_balanced = ConfusionMatrixDisplay(confusion_matrix_rf_balanced, 
+                                                              display_labels = rf_model_balanced.classes_)
+confusion_matrix_display_rf_balanced.plot()
+plt.title("Confusion Matrix for Random Forest \n (After Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_rf_balanced = {"Accuracy": make_scorer(accuracy_score), 
+                     "Precision": make_scorer(precision_score, average = "macro"),
+                     "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_rf_balanced = cross_validate(rf_model_balanced, X_train, y_train, cv = 5, 
+                                              scoring = score_rf_balanced)
+cross_validation_rf_balanced = pd.DataFrame(cross_validation_rf_balanced)
+
+
+
+
 
 ########## Gradient Boosting Classifier #########
 # Train the model
@@ -179,6 +199,23 @@ y_pred_gb_balanced = gb_model_balanced.predict(X_test)
 
 # Get the classification report for the model
 class_report_gb_balanced = classification_report(y_test, y_pred_gb_balanced)
+
+# Get the confusion matrix for the model
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_gb_balanced = confusion_matrix(y_test, y_pred_gb_balanced)
+confusion_matrix_display_gb_balanced = ConfusionMatrixDisplay(confusion_matrix_gb_balanced, 
+                                                              display_labels = gb_model_balanced.classes_)
+confusion_matrix_display_gb_balanced.plot()
+plt.title("Confusion Matrix for Gradient Boosting \n (After Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_gb_balanced = {"Accuracy": make_scorer(accuracy_score), 
+                     "Precision": make_scorer(precision_score, average = "macro"),
+                     "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_gb_balanced = cross_validate(gb_model_balanced, X_train, y_train, cv = 5, 
+                                              scoring = score_gb_balanced)
+cross_validation_gb_balanced = pd.DataFrame(cross_validation_gb_balanced)
 
 
 
