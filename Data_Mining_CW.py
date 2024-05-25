@@ -49,6 +49,14 @@ new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", 
 # Insert the label at the end of the dataframe
 new_bank_data.insert(11, "Exited", bank_data["Exited"])
 
+
+
+
+
+
+
+
+
 # Create a function to replace the values of "Card Type" to numeric with rank
 def replace_CardType(a):
     return a.replace({"PLATINUM": 3,
