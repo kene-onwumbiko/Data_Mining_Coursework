@@ -11,9 +11,16 @@ from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import cross_validate
 
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from ydata_profiling import ProfileReport
 # import sweetviz as sv
 
@@ -98,6 +105,24 @@ y_pred_rf = rf_model.predict(X_test)
 
 # Get the classification report for the model
 class_report_rf = classification_report(y_test, y_pred_rf)
+
+# Get the confusion matrix for the model
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf = confusion_matrix(y_test, y_pred_rf)
+confusion_matrix_display_rf = ConfusionMatrixDisplay(confusion_matrix_rf, 
+                                                     display_labels = rf_model.classes_)
+confusion_matrix_display_rf.plot()
+plt.title("Confusion Matrix for Randon Forest")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_rf = {"Accuracy": make_scorer(accuracy_score), 
+            "Precision": make_scorer(precision_score, average = "macro"),
+            "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
+
+
+
 
 
 ########## Gradient Boosting Classifier #########
