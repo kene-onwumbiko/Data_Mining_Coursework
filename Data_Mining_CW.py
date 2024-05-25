@@ -10,8 +10,10 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
+from sklearn.preprocessing import LabelEncoder
 
 import pandas as pd
+import numpy as np
 from ydata_profiling import ProfileReport
 # import sweetviz as sv
 
@@ -47,15 +49,18 @@ bank_profile.to_file("bank_churn.html")
 new_bank_data = bank_data.drop(columns = ["RowNumber", "CustomerId", "Surname", "Exited"])
 
 # Insert the label at the end of the dataframe
-new_bank_data.insert(11, "Exited", bank_data["Exited"])
+new_bank_data.insert(14, "Exited", bank_data["Exited"])
 
+new_bank_data["Balance"] = new_bank_data["Balance"].replace({0: 10})
 
+new_bank_data["Balance"] = np.log(new_bank_data["Balance"])
 
+# Initialize LabelEncoder
+label_encoder = LabelEncoder()
 
-
-
-
-
+# Convert "Geography and Gender" to numeric
+new_bank_data["Geography"] = label_encoder.fit_transform(new_bank_data["Geography"])
+new_bank_data["Gender"] = label_encoder.fit_transform(new_bank_data["Gender"])
 
 # Create a function to replace the values of "Card Type" to numeric with rank
 def replace_CardType(a):
@@ -72,8 +77,11 @@ X = new_bank_data.iloc[:, :-1]
 y = new_bank_data.iloc[:, -1]
 
 # Split the data into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3, stratify = (y), 
-                                                    random_state = 0)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.5, stratify = (y))
+
+# Split the training data into validation and training data
+X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size = 0.33, 
+                                                              stratify = (y_train))
 
 
 
