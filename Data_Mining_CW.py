@@ -142,7 +142,7 @@ class_report_gb = classification_report(y_test, y_pred_gb)
 
 ########## AFTER BALANCING THE DATA ##########
 # Initiate ADASYN Algorithm to balance the data
-adasyn = ADASYN()
+adasyn = ADASYN(sampling_strategy = "minority")
 X_train_balanced, y_train_balanced = adasyn.fit_resample(X_train, y_train) 
 
 
