@@ -120,7 +120,7 @@ score_rf = {"Accuracy": make_scorer(accuracy_score),
             "Precision": make_scorer(precision_score, average = "macro"),
             "Recall": make_scorer(recall_score, average = "macro")}
 cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
-
+print(cross_validation_rf)
 
 
 
