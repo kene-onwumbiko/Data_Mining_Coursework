@@ -239,19 +239,34 @@ cross_validation_rf_balanced = pd.DataFrame(cross_validation_rf_balanced)
 gb_model_balanced = GradientBoostingClassifier()
 gb_model_balanced.fit(X_train_balanced, y_train_balanced)
 
-# Make the prediction
-y_pred_gb_balanced = gb_model_balanced.predict(X_test)
+# Make the predictions on the validation data
+y_val_pred_gb_balanced = gb_model_balanced.predict(X_val)
 
-# Get the classification report for the model
-class_report_gb_balanced = classification_report(y_test, y_pred_gb_balanced)
+# Get the classification report for the validation data
+class_report_gb_val_balanced = classification_report(y_val, y_val_pred_gb_balanced)
 
-# Get the confusion matrix for the model
+# Get the confusion matrix for the validation data
 plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb_balanced = confusion_matrix(y_test, y_pred_gb_balanced)
-confusion_matrix_display_gb_balanced = ConfusionMatrixDisplay(confusion_matrix_gb_balanced, 
-                                                              display_labels = gb_model_balanced.classes_)
-confusion_matrix_display_gb_balanced.plot()
-plt.title("Confusion Matrix for Gradient Boosting \n (After Balancing the Data & Before Dropping COMPLAIN Column)")
+confusion_matrix_gb_val_balanced = confusion_matrix(y_val, y_val_pred_gb_balanced)
+confusion_matrix_display_gb_val_balanced = ConfusionMatrixDisplay(confusion_matrix_gb_val_balanced, 
+                                                                  display_labels = gb_model_balanced.classes_)
+confusion_matrix_display_gb_val_balanced.plot()
+plt.title("Validation Data Confusion Matrix for Gradient Boosting \n (After Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Make the predictions on the test data
+y_test_pred_gb_balanced = gb_model_balanced.predict(X_test)
+
+# Get the classification report for the test data
+class_report_gb_test_balanced = classification_report(y_test, y_test_pred_gb_balanced)
+
+# Get the confusion matrix for the test data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_gb_test_balanced = confusion_matrix(y_test, y_test_pred_gb_balanced)
+confusion_matrix_display_gb_test_balanced = ConfusionMatrixDisplay(confusion_matrix_gb_test_balanced, 
+                                                                   display_labels = gb_model_balanced.classes_)
+confusion_matrix_display_gb_test_balanced.plot()
+plt.title("Test Data Confusion Matrix for Gradient Boosting \n (After Balancing the Data & Before Dropping COMPLAIN Column)")
 plt.show()
 
 # Get the cross-validation scores for the model
