@@ -404,11 +404,46 @@ X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train, y2_train)
 rf_model2_balanced = RandomForestClassifier()
 rf_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
-# Make the prediction
-y2_pred_rf_balanced = rf_model2_balanced.predict(X2_test)
+# Make the predictions on the validation data
+y2_val_pred_rf_balanced = rf_model2_balanced.predict(X2_val)
 
-# Get the classification report for the model
-class_report_rf2_balanced = classification_report(y2_test, y2_pred_rf_balanced)
+# Get the classification report for the validation data
+class_report_rf2_val_balanced = classification_report(y2_val, y2_val_pred_rf_balanced)
+
+# Get the confusion matrix for the validation data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf2_val_balanced = confusion_matrix(y2_val, y2_val_pred_rf_balanced)
+confusion_matrix_display_rf2_val_balanced = ConfusionMatrixDisplay(confusion_matrix_rf2_val_balanced, 
+                                                                   display_labels = rf_model2_balanced.classes_)
+confusion_matrix_display_rf2_val_balanced.plot()
+plt.title("Validation Data Confusion Matrix for Random Forest \n (After Balancing the Data & After Dropping COMPLAIN Column)")
+plt.show()
+
+# Make the predictions on the test data
+y2_test_pred_rf_balanced = rf_model2_balanced.predict(X2_test)
+
+# Get the classification report for the test data
+class_report_rf2_test_balanced = classification_report(y2_test, y2_test_pred_rf_balanced)
+
+# Get the confusion matrix for the test data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf2_test_balanced = confusion_matrix(y2_test, y2_test_pred_rf_balanced)
+confusion_matrix_display_rf2_test_balanced = ConfusionMatrixDisplay(confusion_matrix_rf2_test_balanced, 
+                                                                    display_labels = rf_model2_balanced.classes_)
+confusion_matrix_display_rf2_test_balanced.plot()
+plt.title("Test Data Confusion Matrix for Random Forest \n (After Balancing the Data & After Dropping COMPLAIN Column)")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_rf2_balanced = {"Accuracy": make_scorer(accuracy_score), 
+                      "Precision": make_scorer(precision_score, average = "macro"),
+                      "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_rf2_balanced = cross_validate(rf_model2_balanced, X2_train, y2_train, cv = 5, 
+                                               scoring = score_rf2_balanced)
+cross_validation_rf2_balanced = pd.DataFrame(cross_validation_rf2_balanced)
+
+
+
 
 
 ########## Gradient Boosting Classifier ##########
