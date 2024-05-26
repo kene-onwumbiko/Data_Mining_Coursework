@@ -79,7 +79,7 @@ X = new_bank_data.iloc[:, :-1]
 y = new_bank_data.iloc[:, -1]
 
 # Split the data into training+validation and testing data
-X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size = 0.5, stratify = (y))
+X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size = 0.2, stratify = (y))
 
 # Further split the training+validation data into training and validation data
 X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size = 0.33, 
@@ -292,7 +292,7 @@ X2 = bank_data_without_complain.iloc[:, :-1]
 y2 = bank_data_without_complain.iloc[:, -1]
 
 # Split the data into training+validation and testing data
-X2_train_val, X2_test, y2_train_val, y2_test = train_test_split(X2, y2, test_size = 0.5, 
+X2_train_val, X2_test, y2_train_val, y2_test = train_test_split(X2, y2, test_size = 0.2, 
                                                                 stratify = (y2))
 
 # Further split the training+validation data into training and validation data
