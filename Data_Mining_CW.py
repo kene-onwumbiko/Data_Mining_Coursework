@@ -496,30 +496,22 @@ cross_validation_gb2_balanced = pd.DataFrame(cross_validation_gb2_balanced)
 
 
 ################### SCALING THE DATA ###################
-# Define the column transformer
-# Applying MinMaxScaler to all columns except for column 6 (which is the 5th index here)
-ct_scaler = ColumnTransformer(transformers = [("scale", MinMaxScaler(), ["CreditScore", 
-                                                                         "Geography", 
-                                                                         "Gender", 
-                                                                         "Age", 
-                                                                         "Tenure", 
-                                                                         "NumOfProducts", 
-                                                                         "HasCrCard", 
-                                                                         "IsActiveMember", 
-                                                                         "EstimatedSalary", 
-                                                                         "Complain", 
-                                                                         "Satisfaction Score", 
-                                                                         "Card Type", 
-                                                                         "Point Earned"])], 
+# Initialise Column Transformer to scale selected columns
+# Apply MinMaxScaler to all columns except for "Balance" (5th index) because it 
+# had already been scaled previously using logarithm 
+ct_scaler = ColumnTransformer(transformers = [("scale", MinMaxScaler(), 
+                                               [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13])], 
                               remainder = "passthrough")
 
-# Fit the column transformer on the training data and transform the training data
+# Fit the Column Transformer on the training data and transform the training data
 X_train_scaled = ct_scaler.fit_transform(X_train)
 
-# Transform the validation and test data using the fitted column transformer
+# Transform the validation and test data using the fitted Column Transformer
 X_val_scaled = ct_scaler.transform(X_val)
 X_test_scaled = ct_scaler.transform(X_test)
 
+
+########## Random Forest Classifier ##########
 # Train the model
 rf_model_scaled = RandomForestClassifier()
 rf_model_scaled.fit(X_train_scaled, y_train)
