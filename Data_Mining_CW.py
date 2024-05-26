@@ -563,7 +563,43 @@ cross_validation_rf_scaled = pd.DataFrame(cross_validation_rf_scaled)
 gb_model_scaled = GradientBoostingClassifier()
 gb_model_scaled.fit(X_train_scaled, y_train)
 
+# Make the predictions on the validation data
+y_val_pred_gb_scaled = gb_model_scaled.predict(X_val_scaled)
 
+# Get the classification report for the validation data
+class_report_gb_val_scaled = classification_report(y_val, y_val_pred_gb_scaled)
+
+# Get the confusion matrix for the validation data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_gb_val_scaled = confusion_matrix(y_val, y_val_pred_gb_scaled)
+confusion_matrix_display_gb_val_scaled = ConfusionMatrixDisplay(confusion_matrix_gb_val_scaled, 
+                                                                display_labels = gb_model_scaled.classes_)
+confusion_matrix_display_gb_val_scaled.plot()
+plt.title("Scaled Validation Data Confusion Matrix for Gradient Boosting \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Make the predictions on the test data
+y_test_pred_gb_scaled = gb_model_scaled.predict(X_test_scaled)
+
+# Get the classification report for the test data
+class_report_gb_test_scaled = classification_report(y_test, y_test_pred_gb_scaled)
+
+# Get the confusion matrix for the test data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_gb_test_scaled = confusion_matrix(y_test, y_test_pred_gb_scaled)
+confusion_matrix_display_gb_test_scaled = ConfusionMatrixDisplay(confusion_matrix_gb_test_scaled, 
+                                                                 display_labels = gb_model_scaled.classes_)
+confusion_matrix_display_gb_test_scaled.plot()
+plt.title("Scaled Test Data Confusion Matrix for Gradient Boosting \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
+plt.show()
+
+# Get the cross-validation scores for the model
+score_gb_scaled = {"Accuracy": make_scorer(accuracy_score), 
+                   "Precision": make_scorer(precision_score, average = "macro"),
+                   "Recall": make_scorer(recall_score, average = "macro")}
+cross_validation_gb_scaled = cross_validate(gb_model_scaled, X_train_scaled, y_train, cv = 5, 
+                                            scoring = score_gb_scaled)
+cross_validation_gb_scaled = pd.DataFrame(cross_validation_gb_scaled)
 
 
 
