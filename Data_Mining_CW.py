@@ -17,6 +17,8 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_validate
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.compose import ColumnTransformer
 
 import pandas as pd
 import numpy as np
@@ -488,6 +490,40 @@ score_gb2_balanced = {"Accuracy": make_scorer(accuracy_score),
 cross_validation_gb2_balanced = cross_validate(gb_model2_balanced, X2_train, y2_train, cv = 5, 
                                                scoring = score_gb2_balanced)
 cross_validation_gb2_balanced = pd.DataFrame(cross_validation_gb2_balanced)
+
+
+
+
+
+################### SCALING THE DATA ###################
+# Define the column transformer
+# Applying MinMaxScaler to all columns except for column 6 (which is the 5th index here)
+ct_scaler = ColumnTransformer(transformers = [("scale", MinMaxScaler(), ["CreditScore", 
+                                                                         "Geography", 
+                                                                         "Gender", 
+                                                                         "Age", 
+                                                                         "Tenure", 
+                                                                         "NumOfProducts", 
+                                                                         "HasCrCard", 
+                                                                         "IsActiveMember", 
+                                                                         "EstimatedSalary", 
+                                                                         "Complain", 
+                                                                         "Satisfaction Score", 
+                                                                         "Card Type", 
+                                                                         "Point Earned"])], 
+                              remainder = "passthrough")
+
+# Fit the column transformer on the training data and transform the training data
+X_train_scaled = ct_scaler.fit_transform(X_train)
+
+# Transform the validation and test data using the fitted column transformer
+X_val_scaled = ct_scaler.transform(X_val)
+X_test_scaled = ct_scaler.transform(X_test)
+
+# Train the model
+rf_model_scaled = RandomForestClassifier()
+rf_model_scaled.fit(X_train_scaled, y_train)
+
 
 
 
