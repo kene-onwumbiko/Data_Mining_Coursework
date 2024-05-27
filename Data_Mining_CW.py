@@ -515,7 +515,7 @@ confusion_matrix_gb2_train_balanced = confusion_matrix(y2_train_balanced, y2_tra
 confusion_matrix_display_gb2_train_balanced = ConfusionMatrixDisplay(confusion_matrix_gb2_train_balanced, 
                                                                      display_labels = gb_model2_balanced.classes_)
 confusion_matrix_display_gb2_train_balanced.plot()
-plt.title("Test Data Confusion Matrix for Gradient Boosting \n (After Balancing the Data & After Dropping COMPLAIN Column)")
+plt.title("Training Data Confusion Matrix for Gradient Boosting \n (After Balancing the Data & After Dropping COMPLAIN Column)")
 plt.show()
 
 # Make the predictions on the validation data
