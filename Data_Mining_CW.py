@@ -442,14 +442,14 @@ rf_model2_balanced = RandomForestClassifier()
 rf_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the predictions on the training data
-y2_train_pred_rf_balanced = rf_model2_balanced.predict(X2_train_scaled)
+y2_train_pred_rf_balanced = rf_model2_balanced.predict(X2_train_balanced)
 
 # Get the classification report for the training data
-class_report_rf2_train_balanced = classification_report(y2_train, y2_train_pred_rf_balanced)
+class_report_rf2_train_balanced = classification_report(y2_train_balanced, y2_train_pred_rf_balanced)
 
 # Get the confusion matrix for the training data
 plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf2_train_balanced = confusion_matrix(y2_train, y2_train_pred_rf_balanced)
+confusion_matrix_rf2_train_balanced = confusion_matrix(y2_train_balanced, y2_train_pred_rf_balanced)
 confusion_matrix_display_rf2_train_balanced = ConfusionMatrixDisplay(confusion_matrix_rf2_train_balanced, 
                                                                      display_labels = rf_model2_balanced.classes_)
 confusion_matrix_display_rf2_train_balanced.plot()
@@ -504,14 +504,14 @@ gb_model2_balanced = GradientBoostingClassifier()
 gb_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the predictions on the training data
-y2_train_pred_gb_balanced = gb_model2_balanced.predict(X2_train_scaled)
+y2_train_pred_gb_balanced = gb_model2_balanced.predict(X2_train_balanced)
 
 # Get the classification report for the training data
-class_report_gb2_train_balanced = classification_report(y2_train, y2_train_pred_gb_balanced)
+class_report_gb2_train_balanced = classification_report(y2_train_balanced, y2_train_pred_gb_balanced)
 
 # Get the confusion matrix for the training data
 plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb2_train_balanced = confusion_matrix(y2_train, y2_train_pred_gb_balanced)
+confusion_matrix_gb2_train_balanced = confusion_matrix(y2_train_balanced, y2_train_pred_gb_balanced)
 confusion_matrix_display_gb2_train_balanced = ConfusionMatrixDisplay(confusion_matrix_gb2_train_balanced, 
                                                                      display_labels = gb_model2_balanced.classes_)
 confusion_matrix_display_gb2_train_balanced.plot()
