@@ -5,7 +5,6 @@ Created on Thu May  2 19:56:23 2024
 @author: keneo
 """
 
-# Import Libraries
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
@@ -16,35 +15,42 @@ from sklearn.model_selection import cross_val_score, cross_validate, RepeatedStr
 from sklearn.metrics import confusion_matrix, classification_report, accuracy_score, precision_score, recall_score, f1_score
 from imblearn.over_sampling import ADASYN
 
-# Get Dataset
-dataset = pd.read_csv("Customer-Churn-Records.csv")
+# Import the dataset
+bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Churn-Records.csv")
 
-# EDA
-dataset.info()
-head = dataset.head()
-tail = dataset.tail()
-descriptive = dataset.describe()
-correlation_matrix = dataset.corr()
-null = dataset.isnull().sum()
+# Exploratory Data Analysis
+bank_data.info()
+head = bank_data.head()
+tail = bank_data.tail()
+descriptive = bank_data.describe()
+correlation_matrix = bank_data.corr()
+null = bank_data.isnull().sum()
+
+# # Use YData-profiling library to perform Exploratory Data Analysis on the dataset
+# bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
+# bank_profile.to_file("bank_churn.html")
+
+# # Link to the Exploratory Data Analysis available on Github
+# "https://kene-onwumbiko.github.io/Data_Mining_Coursework/bank_churn.html"
 
 # Drop columns
-dataset = dataset.drop(["RowNumber", "CustomerId", "Surname"], axis = 1)
+new_bank_data = bank_data.drop(["RowNumber", "CustomerId", "Surname"], axis = 1)
 
 # Preprocessing data
 # Fix balance column - Zero-Inflated Distribution
-dataset['Balance_Zero'] = (dataset['Balance'] == 0).astype(int)
-dataset['Balance_Log'] = np.log1p(dataset['Balance'])
-dataset.loc[dataset['Balance'] == 0, 'Balance_Log'] = -1
-dataset = dataset.drop('Balance', axis = 1)
+new_bank_data["Balance_Zero"] = (new_bank_data["Balance"] == 0).astype(int)
+new_bank_data["Balance_Log"] = np.log1p(new_bank_data["Balance"])
+new_bank_data.loc[new_bank_data["Balance"] == 0, "Balance_Log"] = -1
+new_bank_data = new_bank_data.drop("Balance", axis = 1)
 
 # Drop columns, Dummies, Replace Values
-dataset = dataset.drop("Complain", axis = 1)
-dataset = pd.get_dummies(dataset, columns = ["Geography", "Gender"], drop_first=True)
-dataset = dataset.replace({"SILVER": 0, "GOLD": 1, "PLATINUM": 2, "DIAMOND": 3})
+new_bank_data = new_bank_data.drop("Complain", axis = 1)
+new_bank_data = pd.get_dummies(new_bank_data, columns = ["Geography", "Gender"], drop_first=True)
+new_bank_data = new_bank_data.replace({"SILVER": 0, "GOLD": 1, "PLATINUM": 2, "DIAMOND": 3})
 
 # Select dependent and independent variables
-X = dataset.drop("Exited", axis=1)
-y = dataset.Exited
+X = new_bank_data.drop("Exited", axis=1)
+y = new_bank_data.Exited
 
 # Split dataset into training and test data
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0, stratify = y)
