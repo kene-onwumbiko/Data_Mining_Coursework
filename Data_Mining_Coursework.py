@@ -7,6 +7,7 @@ Created on Thu May  2 19:56:23 2024
 
 import numpy as np
 import pandas as pd
+from ydata_profiling import ProfileReport
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
@@ -26,30 +27,32 @@ descriptive = bank_data.describe()
 correlation_matrix = bank_data.corr()
 null = bank_data.isnull().sum()
 
-# # Use YData-profiling library to perform Exploratory Data Analysis on the dataset
-# bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
-# bank_profile.to_file("bank_churn.html")
+# Use YData-profiling library to perform Exploratory Data Analysis on the dataset
+bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
+bank_profile.to_file("bank_churn.html")
 
-# # Link to the Exploratory Data Analysis available on Github
-# "https://kene-onwumbiko.github.io/Data_Mining_Coursework/bank_churn.html"
+# Link to the Exploratory Data Analysis available on Github
+"https://kene-onwumbiko.github.io/Data_Mining_Coursework/bank_churn.html"
 
-# Drop columns
+# Drop Irrelevant Columns
 new_bank_data = bank_data.drop(["RowNumber", "CustomerId", "Surname"], axis = 1)
 
-# Preprocessing data
-# Fix balance column - Zero-Inflated Distribution
+# Preprocessing Data
+# Fix balance column because of zero-inflated distribution
 new_bank_data["Balance_Zero"] = (new_bank_data["Balance"] == 0).astype(int)
 new_bank_data["Balance_Log"] = np.log1p(new_bank_data["Balance"])
 new_bank_data.loc[new_bank_data["Balance"] == 0, "Balance_Log"] = -1
 new_bank_data = new_bank_data.drop("Balance", axis = 1)
 
-# Drop columns, Dummies, Replace Values
+# Drop "Complain" column
 new_bank_data = new_bank_data.drop("Complain", axis = 1)
-new_bank_data = pd.get_dummies(new_bank_data, columns = ["Geography", "Gender"], drop_first=True)
+
+# Convert categorical values to numeric
+new_bank_data = pd.get_dummies(new_bank_data, columns = ["Geography", "Gender"], drop_first = True)
 new_bank_data = new_bank_data.replace({"SILVER": 0, "GOLD": 1, "PLATINUM": 2, "DIAMOND": 3})
 
-# Select dependent and independent variables
-X = new_bank_data.drop("Exited", axis=1)
+# Separate the features and label 
+X = new_bank_data.drop("Exited", axis = 1)
 y = new_bank_data.Exited
 
 # Split dataset into training and test data
@@ -69,7 +72,7 @@ X_test[["CreditScore", "Age", "Point Earned", "EstimatedSalary"]] = scaler.trans
 X_val[["CreditScore", "Age", "Point Earned", "EstimatedSalary"]] = scaler.transform(X_val[["CreditScore", "Age", "Point Earned", "EstimatedSalary"]])
 
 # Feature selection
-# ---> Statistical Approach
+########## Statistical Approach ##########
 select_object = SelectFpr(score_func = f_classif)
 X_resampled = pd.DataFrame(select_object.fit_transform(X_resampled, y_resampled), columns=select_object.get_feature_names_out())
 X_train = pd.DataFrame(select_object.transform(X_train), columns=select_object.get_feature_names_out())
@@ -77,7 +80,7 @@ X_test = pd.DataFrame(select_object.transform(X_test), columns=select_object.get
 X_val = pd.DataFrame(select_object.transform(X_val), columns=select_object.get_feature_names_out())
 
 # Model Training
-# CLASSIFIER ONE: Random Forest Classifier
+########## Random Forest Classifier ##########
 classifier_1 = RandomForestClassifier(max_depth = 5, max_features = None, random_state = 0, warm_start = True)
 model_1 = classifier_1.fit(X_resampled, y_resampled)
 
@@ -141,7 +144,7 @@ train_score_1 = np.mean(cross_validation_2["train_score"])
 
 
 
-# CLASSIFIER TWO: Gradient Boosting Classifier
+########## Gradient Boosting Classifier ##########
 classifier_2 = GradientBoostingClassifier(learning_rate = 0.01, n_estimators = 300, max_depth = 5, random_state = 0, n_iter_no_change = 10)
 model_2 = classifier_2.fit(X_resampled, y_resampled)
 
