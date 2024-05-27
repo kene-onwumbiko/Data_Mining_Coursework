@@ -28,9 +28,12 @@ from ydata_profiling import ProfileReport
 # Import the dataset
 bank_data = pd.read_csv(r"C:\Users\keneo\Downloads\Project Dataset\Customer-Churn-Records.csv")
 
-# Use YData-profiling library to perform exploratory data analysis on the dataset
+# Use YData-profiling library to perform Exploratory Data Analysis on the dataset
 bank_profile = ProfileReport(bank_data, title = "Bank Customer Churn Dataset EDA")
 bank_profile.to_file("bank_churn.html")
+
+# Link to the Exploratory Data Analysis available on Github
+"https://kene-onwumbiko.github.io/Data_Mining_Coursework/bank_churn.html"
 
 
 
