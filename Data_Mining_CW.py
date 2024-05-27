@@ -88,6 +88,18 @@ X_train_val, X_test, y_train_val, y_test = train_test_split(X, y, test_size = 0.
 X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test_size = 0.33, 
                                                   stratify = (y_train_val))
 
+# Initialise Column Transformer to scale selected columns
+ct_scaler = ColumnTransformer(transformers = [("scale", MinMaxScaler(), 
+                                               [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13])], 
+                              remainder = "passthrough")
+
+# Fit the Column Transformer on the training data and transform the training data
+X_train_scaled = ct_scaler.fit_transform(X_train)
+
+# Transform the validation and test data using the fitted Column Transformer
+X_val_scaled = ct_scaler.transform(X_val)
+X_test_scaled = ct_scaler.transform(X_test)
+
 
 
 
@@ -96,10 +108,10 @@ X_train, X_val, y_train, y_val = train_test_split(X_train_val, y_train_val, test
 ########## Random Forest Classifier ##########
 # Train the model
 rf_model = RandomForestClassifier()
-rf_model.fit(X_train, y_train)
+rf_model.fit(X_train_scaled, y_train)
 
 # Make the predictions on the validation data
-y_val_pred_rf = rf_model.predict(X_val)
+y_val_pred_rf = rf_model.predict(X_val_scaled)
 
 # Get the classification report for the validation data
 class_report_rf_val = classification_report(y_val, y_val_pred_rf)
@@ -114,7 +126,7 @@ plt.title("Validation Data Confusion Matrix for Random Forest \n (Before Balanci
 plt.show()
 
 # Make the predictions on the test data
-y_test_pred_rf = rf_model.predict(X_test)
+y_test_pred_rf = rf_model.predict(X_test_scaled)
 
 # Get the classification report for the test data
 class_report_rf_test = classification_report(y_test, y_test_pred_rf)
@@ -132,7 +144,7 @@ plt.show()
 score_rf = {"Accuracy": make_scorer(accuracy_score), 
             "Precision": make_scorer(precision_score, average = "macro"),
             "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf = cross_validate(rf_model, X_train, y_train, cv = 5, scoring = score_rf)
+cross_validation_rf = cross_validate(rf_model, X_train_scaled, y_train, cv = 5, scoring = score_rf)
 cross_validation_rf = pd.DataFrame(cross_validation_rf)
 
 
@@ -142,10 +154,10 @@ cross_validation_rf = pd.DataFrame(cross_validation_rf)
 ########## Gradient Boosting Classifier #########
 # Train the model
 gb_model = GradientBoostingClassifier()
-gb_model.fit(X_train, y_train)
+gb_model.fit(X_train_scaled, y_train)
 
 # Make the predictions on the validation data
-y_val_pred_gb = gb_model.predict(X_val)
+y_val_pred_gb = gb_model.predict(X_val_scaled)
 
 # Get the classification report for the validation data
 class_report_gb_val = classification_report(y_val, y_val_pred_gb)
@@ -160,7 +172,7 @@ plt.title("Validation Data Confusion Matrix for Gradient Boosting \n (Before Bal
 plt.show()
 
 # Make the predictions on the test data
-y_test_pred_gb = gb_model.predict(X_test)
+y_test_pred_gb = gb_model.predict(X_test_scaled)
 
 # Get the classification report for the test data
 class_report_gb_test = classification_report(y_test, y_test_pred_gb)
@@ -178,7 +190,7 @@ plt.show()
 score_gb = {"Accuracy": make_scorer(accuracy_score), 
             "Precision": make_scorer(precision_score, average = "macro"),
             "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb = cross_validate(gb_model, X_train, y_train, cv = 5, scoring = score_gb)
+cross_validation_gb = cross_validate(gb_model, X_train_scaled, y_train, cv = 5, scoring = score_gb)
 cross_validation_gb = pd.DataFrame(cross_validation_gb)
 
 
@@ -189,7 +201,7 @@ cross_validation_gb = pd.DataFrame(cross_validation_gb)
 # Handle Class Imbalance
 # Initialise ADASYN Algorithm to balance the data
 adasyn = ADASYN(sampling_strategy = "minority")
-X_train_balanced, y_train_balanced = adasyn.fit_resample(X_train, y_train) 
+X_train_balanced, y_train_balanced = adasyn.fit_resample(X_train_scaled, y_train) 
 
 
 ########## Random Forest Classifier ##########
@@ -198,7 +210,7 @@ rf_model_balanced = RandomForestClassifier()
 rf_model_balanced.fit(X_train_balanced, y_train_balanced)
 
 # Make the predictions on the validation data
-y_val_pred_rf_balanced = rf_model_balanced.predict(X_val)
+y_val_pred_rf_balanced = rf_model_balanced.predict(X_val_scaled)
 
 # Get the classification report for the validation data
 class_report_rf_val_balanced = classification_report(y_val, y_val_pred_rf_balanced)
@@ -213,7 +225,7 @@ plt.title("Validation Data Confusion Matrix for Random Forest \n (After Balancin
 plt.show()
 
 # Make the predictions on the test data
-y_test_pred_rf_balanced = rf_model_balanced.predict(X_test)
+y_test_pred_rf_balanced = rf_model_balanced.predict(X_test_scaled)
 
 # Get the classification report for the test data
 class_report_rf_test_balanced = classification_report(y_test, y_test_pred_rf_balanced)
@@ -231,7 +243,7 @@ plt.show()
 score_rf_balanced = {"Accuracy": make_scorer(accuracy_score), 
                      "Precision": make_scorer(precision_score, average = "macro"),
                      "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf_balanced = cross_validate(rf_model_balanced, X_train, y_train, cv = 5, 
+cross_validation_rf_balanced = cross_validate(rf_model_balanced, X_train_scaled, y_train, cv = 5, 
                                               scoring = score_rf_balanced)
 cross_validation_rf_balanced = pd.DataFrame(cross_validation_rf_balanced)
 
@@ -245,7 +257,7 @@ gb_model_balanced = GradientBoostingClassifier()
 gb_model_balanced.fit(X_train_balanced, y_train_balanced)
 
 # Make the predictions on the validation data
-y_val_pred_gb_balanced = gb_model_balanced.predict(X_val)
+y_val_pred_gb_balanced = gb_model_balanced.predict(X_val_scaled)
 
 # Get the classification report for the validation data
 class_report_gb_val_balanced = classification_report(y_val, y_val_pred_gb_balanced)
@@ -260,7 +272,7 @@ plt.title("Validation Data Confusion Matrix for Gradient Boosting \n (After Bala
 plt.show()
 
 # Make the predictions on the test data
-y_test_pred_gb_balanced = gb_model_balanced.predict(X_test)
+y_test_pred_gb_balanced = gb_model_balanced.predict(X_test_scaled)
 
 # Get the classification report for the test data
 class_report_gb_test_balanced = classification_report(y_test, y_test_pred_gb_balanced)
@@ -278,7 +290,7 @@ plt.show()
 score_gb_balanced = {"Accuracy": make_scorer(accuracy_score), 
                      "Precision": make_scorer(precision_score, average = "macro"),
                      "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb_balanced = cross_validate(gb_model_balanced, X_train, y_train, cv = 5, 
+cross_validation_gb_balanced = cross_validate(gb_model_balanced, X_train_scaled, y_train, cv = 5, 
                                               scoring = score_gb_balanced)
 cross_validation_gb_balanced = pd.DataFrame(cross_validation_gb_balanced)
 
@@ -302,6 +314,18 @@ X2_train_val, X2_test, y2_train_val, y2_test = train_test_split(X2, y2, test_siz
 X2_train, X2_val, y2_train, y2_val = train_test_split(X2_train_val, y2_train_val, test_size = 0.33, 
                                                       stratify = (y2_train_val))
 
+# Initialise Column Transformer to scale selected columns
+ct_scaler2 = ColumnTransformer(transformers = [("scale", MinMaxScaler(), 
+                                                [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12])], 
+                               remainder = "passthrough")
+
+# Fit the Column Transformer on the training data and transform the training data
+X2_train_scaled = ct_scaler2.fit_transform(X2_train)
+
+# Transform the validation and test data using the fitted Column Transformer
+X2_val_scaled = ct_scaler2.transform(X2_val)
+X2_test_scaled = ct_scaler2.transform(X2_test)
+
 
 
 
@@ -310,10 +334,10 @@ X2_train, X2_val, y2_train, y2_val = train_test_split(X2_train_val, y2_train_val
 ########## Random Forest Classifier ##########
 # Train the model
 rf_model2 = RandomForestClassifier()
-rf_model2.fit(X2_train, y2_train)
+rf_model2.fit(X2_train_scaled, y2_train)
 
 # Make the predictions on the validation data
-y2_val_pred_rf = rf_model2.predict(X2_val)
+y2_val_pred_rf = rf_model2.predict(X2_val_scaled)
 
 # Get the classification report for the validation data
 class_report_rf2_val = classification_report(y2_val, y2_val_pred_rf)
@@ -328,7 +352,7 @@ plt.title("Validation Data Confusion Matrix for Random Forest \n (Before Balanci
 plt.show()
 
 # Make the predictions on the test data
-y2_test_pred_rf = rf_model2.predict(X2_test)
+y2_test_pred_rf = rf_model2.predict(X2_test_scaled)
 
 # Get the classification report for the test data
 class_report_rf2_test = classification_report(y2_test, y2_test_pred_rf)
@@ -346,7 +370,7 @@ plt.show()
 score_rf2 = {"Accuracy": make_scorer(accuracy_score), 
              "Precision": make_scorer(precision_score, average = "macro"),
              "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf2 = cross_validate(rf_model2, X2_train, y2_train, cv = 5, scoring = score_rf2)
+cross_validation_rf2 = cross_validate(rf_model2, X2_train_scaled, y2_train, cv = 5, scoring = score_rf2)
 cross_validation_rf2 = pd.DataFrame(cross_validation_rf2)
 
 
@@ -356,10 +380,10 @@ cross_validation_rf2 = pd.DataFrame(cross_validation_rf2)
 ########## Gradient Boosting Classifier ##########
 # Train the model
 gb_model2 = GradientBoostingClassifier()
-gb_model2.fit(X2_train, y2_train)
+gb_model2.fit(X2_train_scaled, y2_train)
 
 # Make the predictions on the validation data
-y2_val_pred_gb = gb_model2.predict(X2_val)
+y2_val_pred_gb = gb_model2.predict(X2_val_scaled)
 
 # Get the classification report for the validation data
 class_report_gb2_val = classification_report(y2_val, y2_val_pred_gb)
@@ -374,7 +398,7 @@ plt.title("Validation Data Confusion Matrix for Gradient Boosting \n (Before Bal
 plt.show()
 
 # Make the predictions on the test data
-y2_test_pred_gb = gb_model2.predict(X2_test)
+y2_test_pred_gb = gb_model2.predict(X2_test_scaled)
 
 # Get the classification report for the test data
 class_report_gb2_test = classification_report(y2_test, y2_test_pred_gb)
@@ -392,7 +416,7 @@ plt.show()
 score_gb2 = {"Accuracy": make_scorer(accuracy_score), 
              "Precision": make_scorer(precision_score, average = "macro"),
              "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb2 = cross_validate(gb_model2, X2_train, y2_train, cv = 5, scoring = score_gb2)
+cross_validation_gb2 = cross_validate(gb_model2, X2_train_scaled, y2_train, cv = 5, scoring = score_gb2)
 cross_validation_gb2 = pd.DataFrame(cross_validation_gb2)
 
 
@@ -401,7 +425,7 @@ cross_validation_gb2 = pd.DataFrame(cross_validation_gb2)
 
 ########## AFTER BALANCING THE DATA ##########
 # Balance the data
-X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train, y2_train) 
+X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train_scaled, y2_train) 
 
 
 ########## Random Forest Classifier ##########
@@ -410,7 +434,7 @@ rf_model2_balanced = RandomForestClassifier()
 rf_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the predictions on the validation data
-y2_val_pred_rf_balanced = rf_model2_balanced.predict(X2_val)
+y2_val_pred_rf_balanced = rf_model2_balanced.predict(X2_val_scaled)
 
 # Get the classification report for the validation data
 class_report_rf2_val_balanced = classification_report(y2_val, y2_val_pred_rf_balanced)
@@ -425,7 +449,7 @@ plt.title("Validation Data Confusion Matrix for Random Forest \n (After Balancin
 plt.show()
 
 # Make the predictions on the test data
-y2_test_pred_rf_balanced = rf_model2_balanced.predict(X2_test)
+y2_test_pred_rf_balanced = rf_model2_balanced.predict(X2_test_scaled)
 
 # Get the classification report for the test data
 class_report_rf2_test_balanced = classification_report(y2_test, y2_test_pred_rf_balanced)
@@ -443,7 +467,7 @@ plt.show()
 score_rf2_balanced = {"Accuracy": make_scorer(accuracy_score), 
                       "Precision": make_scorer(precision_score, average = "macro"),
                       "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf2_balanced = cross_validate(rf_model2_balanced, X2_train, y2_train, cv = 5, 
+cross_validation_rf2_balanced = cross_validate(rf_model2_balanced, X2_train_scaled, y2_train, cv = 5, 
                                                scoring = score_rf2_balanced)
 cross_validation_rf2_balanced = pd.DataFrame(cross_validation_rf2_balanced)
 
@@ -457,7 +481,7 @@ gb_model2_balanced = GradientBoostingClassifier()
 gb_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
 
 # Make the predictions on the validation data
-y2_val_pred_gb_balanced = gb_model2_balanced.predict(X2_val)
+y2_val_pred_gb_balanced = gb_model2_balanced.predict(X2_val_scaled)
 
 # Get the classification report for the validation data
 class_report_gb2_val_balanced = classification_report(y2_val, y2_val_pred_gb_balanced)
@@ -472,7 +496,7 @@ plt.title("Validation Data Confusion Matrix for Gradient Boosting \n (After Bala
 plt.show()
 
 # Make the predictions on the test data
-y2_test_pred_gb_balanced = gb_model2_balanced.predict(X2_test)
+y2_test_pred_gb_balanced = gb_model2_balanced.predict(X2_test_scaled)
 
 # Get the classification report for the test data
 class_report_gb2_test_balanced = classification_report(y2_test, y2_test_pred_gb_balanced)
@@ -490,7 +514,7 @@ plt.show()
 score_gb2_balanced = {"Accuracy": make_scorer(accuracy_score), 
                       "Precision": make_scorer(precision_score, average = "macro"),
                       "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb2_balanced = cross_validate(gb_model2_balanced, X2_train, y2_train, cv = 5, 
+cross_validation_gb2_balanced = cross_validate(gb_model2_balanced, X2_train_scaled, y2_train, cv = 5, 
                                                scoring = score_gb2_balanced)
 cross_validation_gb2_balanced = pd.DataFrame(cross_validation_gb2_balanced)
 
@@ -498,223 +522,7 @@ cross_validation_gb2_balanced = pd.DataFrame(cross_validation_gb2_balanced)
 
 
 
-#######################     SCALING THE DATA     ####################
-####################### WITH COMPLAIN COLUMN ########################
-# Initialise Column Transformer to scale selected columns
-# Apply MinMaxScaler to all columns except for "Balance" (5th index) because it 
-# had already been scaled previously using logarithm 
-ct_scaler = ColumnTransformer(transformers = [("scale", MinMaxScaler(), 
-                                               [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13])], 
-                              remainder = "passthrough")
 
-# Fit the Column Transformer on the training data and transform the training data
-X_train_scaled = ct_scaler.fit_transform(X_train)
-
-# Transform the validation and test data using the fitted Column Transformer
-X_val_scaled = ct_scaler.transform(X_val)
-X_test_scaled = ct_scaler.transform(X_test)
-
-
-########## Random Forest Classifier ##########
-# Train the model
-rf_model_scaled = RandomForestClassifier()
-rf_model_scaled.fit(X_train_scaled, y_train)
-
-# Make the predictions on the validation data
-y_val_pred_rf_scaled = rf_model_scaled.predict(X_val_scaled)
-
-# Get the classification report for the validation data
-class_report_rf_val_scaled = classification_report(y_val, y_val_pred_rf_scaled)
-
-# Get the confusion matrix for the validation data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf_val_scaled = confusion_matrix(y_val, y_val_pred_rf_scaled)
-confusion_matrix_display_rf_val_scaled = ConfusionMatrixDisplay(confusion_matrix_rf_val_scaled, 
-                                                                display_labels = rf_model_scaled.classes_)
-confusion_matrix_display_rf_val_scaled.plot()
-plt.title("Scaled Validation Data Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
-plt.show()
-
-# Make the predictions on the test data
-y_test_pred_rf_scaled = rf_model_scaled.predict(X_test_scaled)
-
-# Get the classification report for the test data
-class_report_rf_test_scaled = classification_report(y_test, y_test_pred_rf_scaled)
-
-# Get the confusion matrix for the test data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf_test_scaled = confusion_matrix(y_test, y_test_pred_rf_scaled)
-confusion_matrix_display_rf_test_scaled = ConfusionMatrixDisplay(confusion_matrix_rf_test_scaled, 
-                                                                 display_labels = rf_model_scaled.classes_)
-confusion_matrix_display_rf_test_scaled.plot()
-plt.title("Scaled Test Data Confusion Matrix for Random Forest \n (Before Balancing the Data & Before Dropping COMPLAIN Column)")
-plt.show()
-
-# Get the cross-validation scores for the model
-score_rf_scaled = {"Accuracy": make_scorer(accuracy_score), 
-                   "Precision": make_scorer(precision_score, average = "macro"),
-                   "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf_scaled = cross_validate(rf_model_scaled, X_train_scaled, y_train, cv = 5, 
-                                            scoring = score_rf_scaled)
-cross_validation_rf_scaled = pd.DataFrame(cross_validation_rf_scaled)
-
-
-
-
-
-########## Gradient Boosting Classifier ##########
-# Train the model
-gb_model_scaled = GradientBoostingClassifier()
-gb_model_scaled.fit(X_train_scaled, y_train)
-
-# Make the predictions on the validation data
-y_val_pred_gb_scaled = gb_model_scaled.predict(X_val_scaled)
-
-# Get the classification report for the validation data
-class_report_gb_val_scaled = classification_report(y_val, y_val_pred_gb_scaled)
-
-# Get the confusion matrix for the validation data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb_val_scaled = confusion_matrix(y_val, y_val_pred_gb_scaled)
-confusion_matrix_display_gb_val_scaled = ConfusionMatrixDisplay(confusion_matrix_gb_val_scaled, 
-                                                                display_labels = gb_model_scaled.classes_)
-confusion_matrix_display_gb_val_scaled.plot()
-plt.title("Scaled Validation Data Confusion Matrix for Gradient Boosting \n (Before Dropping COMPLAIN Column)")
-plt.show()
-
-# Make the predictions on the test data
-y_test_pred_gb_scaled = gb_model_scaled.predict(X_test_scaled)
-
-# Get the classification report for the test data
-class_report_gb_test_scaled = classification_report(y_test, y_test_pred_gb_scaled)
-
-# Get the confusion matrix for the test data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb_test_scaled = confusion_matrix(y_test, y_test_pred_gb_scaled)
-confusion_matrix_display_gb_test_scaled = ConfusionMatrixDisplay(confusion_matrix_gb_test_scaled, 
-                                                                 display_labels = gb_model_scaled.classes_)
-confusion_matrix_display_gb_test_scaled.plot()
-plt.title("Scaled Test Data Confusion Matrix for Gradient Boosting \n (Before Dropping COMPLAIN Column)")
-plt.show()
-
-# Get the cross-validation scores for the model
-score_gb_scaled = {"Accuracy": make_scorer(accuracy_score), 
-                   "Precision": make_scorer(precision_score, average = "macro"),
-                   "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb_scaled = cross_validate(gb_model_scaled, X_train_scaled, y_train, cv = 5, 
-                                            scoring = score_gb_scaled)
-cross_validation_gb_scaled = pd.DataFrame(cross_validation_gb_scaled)
-
-
-
-
-
-#######################     SCALING THE DATA     ####################
-####################### WITHOUT COMPLAIN COLUMN ########################
-# Initialise Column Transformer to scale selected columns
-# Apply MinMaxScaler to all columns except for "Balance" (5th index) because it 
-# had already been scaled previously using logarithm 
-ct_scaler2 = ColumnTransformer(transformers = [("scale", MinMaxScaler(), 
-                                                [0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12])], 
-                               remainder = "passthrough")
-
-# Fit the Column Transformer on the training data and transform the training data
-X2_train_scaled = ct_scaler2.fit_transform(X2_train)
-
-# Transform the validation and test data using the fitted Column Transformer
-X2_val_scaled = ct_scaler2.transform(X2_val)
-X2_test_scaled = ct_scaler2.transform(X2_test)
-
-
-########## Random Forest Classifier ##########
-# Train the model
-rf_model2_scaled = RandomForestClassifier()
-rf_model2_scaled.fit(X2_train_scaled, y2_train)
-
-# Make the predictions on the validation data
-y2_val_pred_rf_scaled = rf_model2_scaled.predict(X2_val_scaled)
-
-# Get the classification report for the validation data
-class_report_rf2_val_scaled = classification_report(y2_val, y2_val_pred_rf_scaled)
-
-# Get the confusion matrix for the validation data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf2_val_scaled = confusion_matrix(y2_val, y2_val_pred_rf_scaled)
-confusion_matrix_display_rf2_val_scaled = ConfusionMatrixDisplay(confusion_matrix_rf2_val_scaled, 
-                                                                 display_labels = rf_model2_scaled.classes_)
-confusion_matrix_display_rf2_val_scaled.plot()
-plt.title("Scaled Validation Data Confusion Matrix for Random Forest \n (After Dropping COMPLAIN Column)")
-plt.show()
-
-# Make the predictions on the test data
-y2_test_pred_rf_scaled = rf_model2_scaled.predict(X2_test_scaled)
-
-# Get the classification report for the test data
-class_report_rf2_test_scaled = classification_report(y2_test, y2_test_pred_rf_scaled)
-
-# Get the confusion matrix for the test data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_rf2_test_scaled = confusion_matrix(y2_test, y2_test_pred_rf_scaled)
-confusion_matrix_display_rf2_test_scaled = ConfusionMatrixDisplay(confusion_matrix_rf2_test_scaled, 
-                                                                  display_labels = rf_model2_scaled.classes_)
-confusion_matrix_display_rf2_test_scaled.plot()
-plt.title("Scaled Test Data Confusion Matrix for Random Forest \n (After Dropping COMPLAIN Column)")
-plt.show()
-
-# Get the cross-validation scores for the model
-score_rf2_scaled = {"Accuracy": make_scorer(accuracy_score), 
-                    "Precision": make_scorer(precision_score, average = "macro"),
-                    "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_rf2_scaled = cross_validate(rf_model2_scaled, X2_train_scaled, y2_train, cv = 5, 
-                                             scoring = score_rf2_scaled)
-cross_validation_rf2_scaled = pd.DataFrame(cross_validation_rf2_scaled)
-
-
-
-
-
-########## Gradient Boosting Classifier ##########
-# Train the model
-gb_model2_scaled = GradientBoostingClassifier()
-gb_model2_scaled.fit(X2_train_scaled, y2_train)
-
-# Make the predictions on the validation data
-y2_val_pred_gb_scaled = gb_model2_scaled.predict(X2_val_scaled)
-
-# Get the classification report for the validation data
-class_report_gb2_val_scaled = classification_report(y2_val, y2_val_pred_gb_scaled)
-
-# Get the confusion matrix for the validation data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb2_val_scaled = confusion_matrix(y2_val, y2_val_pred_gb_scaled)
-confusion_matrix_display_gb2_val_scaled = ConfusionMatrixDisplay(confusion_matrix_gb2_val_scaled, 
-                                                                 display_labels = gb_model2_scaled.classes_)
-confusion_matrix_display_gb2_val_scaled.plot()
-plt.title("Scaled Validation Data Confusion Matrix for Gradient Boosting \n (After Dropping COMPLAIN Column)")
-plt.show()
-
-# Make the predictions on the test data
-y2_test_pred_gb_scaled = gb_model2_scaled.predict(X2_test_scaled)
-
-# Get the classification report for the test data
-class_report_gb2_test_scaled = classification_report(y2_test, y2_test_pred_gb_scaled)
-
-# Get the confusion matrix for the test data
-plt.rcParams["figure.figsize"] = [15, 10]
-confusion_matrix_gb2_test_scaled = confusion_matrix(y2_test, y2_test_pred_gb_scaled)
-confusion_matrix_display_gb2_test_scaled = ConfusionMatrixDisplay(confusion_matrix_gb2_test_scaled, 
-                                                                  display_labels = gb_model2_scaled.classes_)
-confusion_matrix_display_gb2_test_scaled.plot()
-plt.title("Scaled Test Data Confusion Matrix for Gradient Boosting \n (After Dropping COMPLAIN Column)")
-plt.show()
-
-# Get the cross-validation scores for the model
-score_gb2_scaled = {"Accuracy": make_scorer(accuracy_score), 
-                    "Precision": make_scorer(precision_score, average = "macro"),
-                    "Recall": make_scorer(recall_score, average = "macro")}
-cross_validation_gb2_scaled = cross_validate(gb_model2_scaled, X2_train_scaled, y2_train, cv = 5, 
-                                             scoring = score_gb2_scaled)
-cross_validation_gb2_scaled = pd.DataFrame(cross_validation_gb2_scaled)
 
 
 
