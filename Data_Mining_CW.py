@@ -423,6 +423,12 @@ cross_validation_gb2 = pd.DataFrame(cross_validation_gb2)
 
 
 
+
+
+
+
+
+######## EXPERIMENT USED FOR THE REPORT ##########
 ########## AFTER BALANCING THE DATA ##########
 # Balance the data
 X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train_scaled, y2_train) 
@@ -432,6 +438,21 @@ X2_train_balanced, y2_train_balanced = adasyn.fit_resample(X2_train_scaled, y2_t
 # Train the model
 rf_model2_balanced = RandomForestClassifier()
 rf_model2_balanced.fit(X2_train_balanced, y2_train_balanced)
+
+# Make the predictions on the training data
+y2_train_pred_rf_balanced = rf_model2_balanced.predict(X2_train_scaled)
+
+# Get the classification report for the validation data
+class_report_rf2_train_balanced = classification_report(y2_train, y2_train_pred_rf_balanced)
+
+# Get the confusion matrix for the validation data
+plt.rcParams["figure.figsize"] = [15, 10]
+confusion_matrix_rf2_train_balanced = confusion_matrix(y2_train, y2_train_pred_rf_balanced)
+confusion_matrix_display_rf2_train_balanced = ConfusionMatrixDisplay(confusion_matrix_rf2_train_balanced, 
+                                                                     display_labels = rf_model2_balanced.classes_)
+confusion_matrix_display_rf2_train_balanced.plot()
+plt.title("Training Data Confusion Matrix for Random Forest \n (After Balancing the Data & After Dropping COMPLAIN Column)")
+plt.show()
 
 # Make the predictions on the validation data
 y2_val_pred_rf_balanced = rf_model2_balanced.predict(X2_val_scaled)
